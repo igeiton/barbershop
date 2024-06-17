@@ -1,39 +1,41 @@
-import { Alert, Button, Snackbar } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Button } from '@mui/material';
+import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getDay } from '../../Store/API/getDay';
+import { useCreateDayMutation, useGetDaysQuery } from '../../Store/API/daysApi';
+import { hasDay } from './Actions/HasDay';
 import Records from './Records';
 import './ServiceStyles/Day.css';
 import Loading from './UI/Loading';
-import { useAppDispatch, useAppSelector } from '../../Store/store';
-import { setBooked } from '../../Store/userReducer';
+import { useAppSelector } from '../../Store/store';
 import OwnerRecords from './Owner/OwnerRecords';
 
 export default function Day() {
-    const { isBooked, isOwner } = useAppSelector((state) => state.user);
-    // hooks
-    const navigate = useNavigate();
+    const { isOwner } = useAppSelector((state) => state.user);
+
     const path = useLocation().pathname.replace('/', '');
+    const { data: days = [], isLoading } = useGetDaysQuery('');
+    const [createDay] = useCreateDayMutation();
+    const navigate = useNavigate();
 
-    const [patternDay, setPatternDay] = useState<any>();
+    const day = hasDay(path, days);
 
-    // validation
     if (path.replace(/-/g, '').length !== 8 || path.length !== 10) {
         return <div className="w-full self-center text-center">Error</div>;
+        // добавить page with error
     }
 
-    // set day
     useEffect(() => {
-        getDay(path).then((data) => {
-            setPatternDay(data[0]);
-        });
-    }, []);
+        if (day.length === 0) {
+            createDay({
+                day: path,
+                records: [],
+            });
+            console.log('Create new Day');
+        }
+    }, [path]);
 
-    const dispatch = useAppDispatch();
-
-    const handleasd = (status: boolean) => {
-        dispatch(setBooked({ status, date: '' }));
-    };
+    if (isLoading)
+        return <div className="w-full self-center text-center">Loading...</div>;
 
     return (
         <div className="flex flex-col w-full max-w-[100vw] p-[15px] gap-5">
@@ -45,23 +47,21 @@ export default function Day() {
                 {'<< Go Back'}
             </Button>
 
-            {!patternDay ? (
-                <Loading />
-            ) : isOwner ? (
-                <OwnerRecords day={patternDay} />
-            ) : (
-                <Records day={patternDay} update={setPatternDay} />
+            {!isOwner && (
+                <>
+                    {day.length !== 0 && <Records day={day} days={days} />}
+
+                    {day.length === 0 && <Loading />}
+                </>
             )}
 
-            <Snackbar
-                open={isBooked.status}
-                onClose={() => {
-                    console.log('close scnack');
-                    handleasd(false);
-                }}
-            >
-                <Alert severity="success">'lalalallalalalala'</Alert>
-            </Snackbar>
+            {isOwner && (
+                <>
+                    {day.length !== 0 && <OwnerRecords day={day} />}
+
+                    {day.length === 0 && <Loading />}
+                </>
+            )}
         </div>
     );
 }

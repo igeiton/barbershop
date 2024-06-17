@@ -26,7 +26,7 @@ export const daysApi = createApi({
         }),
 
         getDay: build.query({
-            query: (day) => `days/?day=${day}`,
+            query: (day) => `${day}`,
         }),
 
         createDay: build.mutation({
@@ -59,9 +59,7 @@ export const daysApi = createApi({
 
 export const {
     useGetDaysQuery,
-    useLazyGetDaysQuery,
     useGetDayQuery,
-    useLazyGetDayQuery,
     useCreateDayMutation,
     useCreateRecordMutation,
     useDeleteDaysMutation,

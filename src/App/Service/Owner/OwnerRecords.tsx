@@ -1,7 +1,7 @@
 import { useCreateRecordMutation } from '../../../Store/API/daysApi';
 import OwnerRecord from './OwnerRecord';
 
-export default function OwnerRecords({ day: day }: any) {
+export default function OwnerRecords({ day: [day] }: any) {
     const [updateRecord] = useCreateRecordMutation();
     const records = day?.records;
 
