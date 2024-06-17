@@ -10,9 +10,7 @@ import Loading from './UI/Loading';
 import { setBooked } from '../../Store/userReducer';
 
 export default function Record({ time, day, service, update }: any) {
-    const { name, lastName, phone, isBooked } = useAppSelector(
-        (state) => state.user
-    );
+    const { name, lastName, phone } = useAppSelector((state) => state.user);
     const [isBooking, setBooking] = useState(false);
     const [error, setError] = useState(false);
 
