@@ -1,79 +1,39 @@
-import { Button } from '@mui/material';
+import { Alert, Button, Snackbar } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import {
-    useCreateDayMutation,
-    useGetDayQuery,
-    useLazyGetDaysQuery,
-} from '../../Store/API/daysApi';
-import { useAppSelector } from '../../Store/store';
-import Loading from '../UI/Loading';
-import { hasDay } from './Actions/HasDay';
-import Records from './Client/Records';
-import OwnerRecords from './Owner/OwnerRecords';
+import { getDay } from '../../Store/API/getDay';
+import Records from './Records';
 import './ServiceStyles/Day.css';
+import Loading from './UI/Loading';
+import { useAppDispatch, useAppSelector } from '../../Store/store';
+import { setBooked } from '../../Store/userReducer';
+import OwnerRecords from './Owner/OwnerRecords';
 
 export default function Day() {
-    //
+    const { isBooked, isOwner } = useAppSelector((state) => state.user);
     // hooks
     const navigate = useNavigate();
     const path = useLocation().pathname.replace('/', '');
 
-    const [asdday, setasdDay] = useState({
-        id: path,
-        day: path,
-        records: [],
-    });
-
-    const { isOwner } = useAppSelector((state) => state.user);
-
-    // const [trigger, { data: days = [], isLoading, isSuccess }] =
-    //     useLazyGetDaysQuery();
-    const { data: day = [], isSuccess, isError } = useGetDayQuery(path);
-    const [createDay] = useCreateDayMutation();
-
-    // const
-    // const day = hasDay(path, days);
+    const [patternDay, setPatternDay] = useState<any>();
 
     // validation
     if (path.replace(/-/g, '').length !== 8 || path.length !== 10) {
         return <div className="w-full self-center text-center">Error</div>;
-        // добавить page with error !!!!!!!!!!!!!!!!!!!!!
     }
-    // useEffect(() => {
-    //     // get actually days
-    //     trigger('');
 
-    //     // create day if records is empty
-    //     if (day.length === 0) {
-    //     }
-    // }, [path]);
-
-    // useEffect(() => {
-    //     console.log(isSuccess);
-    //     if (isSuccess && day.length === 0) {
-    //         createDay({
-    //             id: path,
-    //             day: path,
-    //             records: [],
-    //         });
-    //         console.log('Create new Day');
-    //         console.log(day);
-    //     }
-    // }, [isSuccess]);
-
-    // if (isLoading) return <div>loading..........</div>;
-
+    // set day
     useEffect(() => {
-        if (isSuccess) {
-            console.log('success');
-            setasdDay(day);
-        }
+        getDay(path).then((data) => {
+            setPatternDay(data[0]);
+        });
+    }, []);
 
-        if (isError) {
-            console.log('error');
-        }
-    }, [isSuccess, isError]);
+    const dispatch = useAppDispatch();
+
+    const handleasd = (status: boolean) => {
+        dispatch(setBooked({ status, date: '' }));
+    };
 
     return (
         <div className="flex flex-col w-full max-w-[100vw] p-[15px] gap-5">
@@ -85,23 +45,23 @@ export default function Day() {
                 {'<< Go Back'}
             </Button>
 
-            <Records day={asdday} days={asdday.id} />
-
-            {/* {!isOwner && (
-                <>
-                    {day.length !== 0 && <Records day={day} days={days} />}
-
-                    {day.length === 0 && <Loading />}
-                </>
+            {!patternDay ? (
+                <Loading />
+            ) : isOwner ? (
+                <OwnerRecords day={patternDay} />
+            ) : (
+                <Records day={patternDay} update={setPatternDay} />
             )}
 
-            {isOwner && (
-                <>
-                    {day.length !== 0 && <OwnerRecords day={day} />}
-
-                    {day.length === 0 && <Loading />}
-                </>
-            )} */}
+            <Snackbar
+                open={isBooked.status}
+                onClose={() => {
+                    console.log('close scnack');
+                    handleasd(false);
+                }}
+            >
+                <Alert severity="success">'lalalallalalalala'</Alert>
+            </Snackbar>
         </div>
     );
 }

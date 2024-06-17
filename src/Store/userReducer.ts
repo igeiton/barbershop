@@ -9,6 +9,12 @@ const userReducer = createSlice({
         selectedMonth: new Date().getMonth() + 1,
         selectedYear: new Date().getFullYear(),
         isOwner: true,
+        service: 1,
+        isBooked: {
+            // заменить на Context
+            status: false,
+            date: '',
+        },
     },
     reducers: {
         setCurrentUser(state, action) {
@@ -23,9 +29,18 @@ const userReducer = createSlice({
         setYear(state, action) {
             state.selectedYear = action.payload;
         },
+
+        setService(state, action) {
+            state.service = action.payload;
+        },
+
+        setBooked(state, action) {
+            state.isBooked = action.payload;
+        },
     },
 });
 
-export const { setCurrentUser, setMonth, setYear } = userReducer.actions;
+export const { setCurrentUser, setMonth, setYear, setService, setBooked } =
+    userReducer.actions;
 
 export default userReducer.reducer;
