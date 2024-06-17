@@ -19,14 +19,9 @@ function gotBgColor(day: any) {
         return 'transparent';
     }
 
-    if (day?.service1 === 'fullfilled' && day?.service3 === 'fullfilled') {
+    if (day.service === 'fullfilled') {
         return 'red';
-    } else if (
-        day?.service1 === 'fullfilled' ||
-        day?.service1 === 'halffilled' ||
-        day?.service3 === 'fullfilled' ||
-        day?.service3 === 'halffilled'
-    ) {
+    } else if (day.service === 'halffilled') {
         return 'orange';
     } else {
         return '#1976d2';

@@ -1,10 +1,8 @@
 import { Divider } from '@mui/material';
-import { useEffect } from 'react';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-    useDeleteDaysMutation,
-    useGetDaysQuery,
-} from '../../../Store/API/daysApi';
+import { useDeleteDaysMutation } from '../../../Store/API/daysApi';
 import { useAppSelector } from '../../../Store/store';
 import Loading from '../../Service/UI/Loading';
 import { styledDay } from '../CalendarStyles/styledDay';
@@ -12,12 +10,16 @@ import { dayOfWeek } from '../DatePicker/Actions/Dates';
 import getDaysByDiff from './Actions/FillDays';
 
 export default function Days() {
+    const navigate = useNavigate();
+
+    const [days, setDays] = useState<any>([]);
+    const [isLoading, setLoading] = useState(true);
+
+    const [deleteDay] = useDeleteDaysMutation();
+
     const { selectedMonth, selectedYear, isOwner } = useAppSelector(
         (state) => state.user
     );
-    const { data: days = [], isLoading } = useGetDaysQuery('');
-    const navigate = useNavigate();
-    const [deleteDay] = useDeleteDaysMutation();
 
     const filledDays = getDaysByDiff(selectedMonth, selectedYear, days);
 
@@ -42,6 +44,12 @@ export default function Days() {
     };
 
     useEffect(() => {
+        axios
+            .get('https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/days')
+            .then((data) => {
+                setDays(data.data);
+                setLoading(false);
+            });
         clearing();
     }, []);
 
