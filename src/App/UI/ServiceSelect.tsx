@@ -1,4 +1,12 @@
 import { Button } from '@mui/material';
+import { IStyles } from '../Calendar/CalendarStyles/styledDay';
+
+interface IProps {
+    bgImage: string;
+    active: boolean;
+    onClick: () => void;
+    children: React.ReactNode;
+}
 
 export default function ServiceSelect({
     bgImage,
@@ -6,7 +14,7 @@ export default function ServiceSelect({
     onClick,
     children,
     ...props
-}: any) {
+}: IProps) {
     return (
         <div
             style={getBackground(bgImage)}
@@ -34,7 +42,7 @@ export default function ServiceSelect({
     );
 }
 
-function getBackground(bgImage: string) {
+function getBackground(bgImage: string): IStyles {
     if (bgImage === '') return { backgroundColor: 'transparent' };
 
     return {

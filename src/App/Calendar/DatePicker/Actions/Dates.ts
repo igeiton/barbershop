@@ -1,4 +1,4 @@
-export const monthsArr = [
+export const monthsArr: string[] = [
     'Январь',
     'Февраль',
     'Март',
@@ -13,7 +13,10 @@ export const monthsArr = [
     'Декабрь',
 ];
 
-export const months: any = {
+interface IMonths {
+    [key: number]: string;
+}
+export const months: IMonths = {
     1: 'Январь',
     2: 'Февраль',
     3: 'Март',
@@ -28,6 +31,6 @@ export const months: any = {
     12: 'Декабрь',
 };
 
-export const year: any = new Date().getFullYear();
+export const year: number = new Date().getFullYear();
 
-export const dayOfWeek = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];
+export const dayOfWeek: string[] = ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС'];

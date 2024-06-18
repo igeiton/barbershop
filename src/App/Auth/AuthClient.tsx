@@ -4,22 +4,32 @@ import { login } from '../../Store/authReducer';
 import { useAppDispatch, useAppSelector } from '../../Store/store';
 import { setCurrentUser } from '../../Store/userReducer';
 import { validePhone } from './Actions/validePhone';
-import Button from './UI/Button';
+import Button from '../UI/Button';
 import Input from './UI/Input';
-import Snack from './UI/Snack';
+import Snack from '../UI/Snack';
+
+export interface IUserAuth {
+    name: string;
+    lastName: string;
+    phone: string;
+}
 
 export default function AuthClient() {
-    const [user, setUser] = useState({
+    // hooks
+
+    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+
+    const { isAuth } = useAppSelector((state) => state.auth);
+
+    const [user, setUser] = useState<IUserAuth>({
         name: '',
         lastName: '',
         phone: ' ',
     });
     const [isValidFields, setValidFields] = useState(true);
-    const { isAuth } = useAppSelector((state) => state.auth);
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
 
-    const handleClick = () => {
+    const handleClick = (): void => {
         if (
             user.name === '' ||
             user.lastName === '' ||
@@ -73,11 +83,10 @@ export default function AuthClient() {
             />
 
             <Snack
-                color="error"
-                open={!isValidFields}
-                onClose={() => setValidFields(true)}
-                autoHideDuration={3000}
                 message={'Заполните все поля'}
+                open={!isValidFields}
+                severity="error"
+                onClose={() => setValidFields(true)}
             />
 
             <Button onClick={handleClick}>Войти</Button>

@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 import { useAppSelector } from '../../Store/store';
+import Header from '../Header/Header';
 
 export default function Auth() {
     const { isAuth } = useAppSelector((state) => state.auth);
@@ -8,5 +9,9 @@ export default function Auth() {
         return <Navigate to="/client_auth" />;
     }
 
-    return <Outlet />;
+    return (
+        <Header>
+            <Outlet />
+        </Header>
+    );
 }

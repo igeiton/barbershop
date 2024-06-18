@@ -1,51 +1,48 @@
 import { useCreateRecordMutation } from '../../../Store/API/daysApi';
+import { IDay } from '../Day';
+import { checkFill } from './Options/CheckFill';
 import OwnerRecord from './OwnerRecord';
 
-export default function OwnerRecords({ day: day }: any) {
+interface IProps {
+    day: IDay;
+}
+
+interface INewRecord {
+    id: number;
+    recordStart: number;
+    recordEnd: number;
+}
+
+export default function OwnerRecords({ day: day }: IProps) {
+    // hooks
     const [updateRecord] = useCreateRecordMutation();
-    const records = day?.records;
 
-    if (records.length === 0) return <div>Null</div>;
+    // validation
+    if (day.records.length === 0) return <div>Null</div>;
 
-    const handleUpdateRecord = (newRecord: any) => {
-        const asd = [...records];
+    // functions
+    const handleUpdateRecord = (newRecord: INewRecord) => {
+        const records: INewRecord[] = [...day.records];
 
-        for (let i = 0; i < records.length; i++) {
-            if (asd[i].id === newRecord.id) {
-                asd[i] = newRecord;
+        for (let i = 0; i < day.records.length; i++) {
+            if (records[i].id === newRecord.id) {
+                records[i] = newRecord;
             }
         }
-
-        const qwe = asd.reduce((accum: any, record: any) => {
-            return accum + record.recordEnd - record.recordStart;
-        }, 0);
-
-        checkFill(qwe);
 
         updateRecord({
             body: {
                 ...day,
-                records: asd,
-                service1: checkFill(qwe),
-                service3: checkFill(qwe),
+                records: records,
+                service: checkFill(records),
             },
             dayID: day.id,
         });
     };
 
-    function checkFill(value: number) {
-        if (value === 0) {
-            return 'empty';
-        } else if (value >= 10) {
-            return 'fullfilled';
-        } else {
-            return 'halffilled';
-        }
-    }
-
     return (
         <div className="flex flex-col max-w-[500px] self-center w-full gap-5">
-            {records.map((record: any) => (
+            {day.records.map((record: any) => (
                 <OwnerRecord
                     key={record.recordStart}
                     record={record}

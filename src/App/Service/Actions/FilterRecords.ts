@@ -1,10 +1,13 @@
-export const filtering = (time: any, service: any, day: any) => {
+import { IDay } from '../Day';
+
+export const filtering = (time: number, service: number, day: IDay) => {
     if (time + service > 18) {
         return false;
     }
 
-    for (let i = 0; i < day?.records.length; i++) {
-        const counter = day.records[i].recordEnd - day.records[i].recordStart;
+    for (let i = 0; i < day.records.length; i++) {
+        const counter: number =
+            day.records[i].recordEnd - day.records[i].recordStart;
 
         for (let j = 0; j < counter; j++) {
             if (

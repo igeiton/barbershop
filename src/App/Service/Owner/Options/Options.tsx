@@ -1,6 +1,18 @@
 import { Button } from '@mui/material';
 
-export default function Options({ editMode, setEditMode, cancel, save }: any) {
+interface IProps {
+    editMode: boolean;
+    setEditMode: (editMode: boolean) => void;
+    cancel: () => void;
+    save: () => void;
+}
+
+export default function Options({
+    editMode,
+    setEditMode,
+    cancel,
+    save,
+}: IProps) {
     return (
         <div className="flex w-full justify-around gap-5">
             {!editMode && (

@@ -1,6 +1,11 @@
 import { Button } from '@mui/material';
 
-export default function CustomButton({ children, onClick }: any) {
+interface IProps {
+    children: React.ReactNode;
+    onClick: () => void;
+}
+
+export default function CustomButton({ children, onClick }: IProps) {
     return (
         <Button
             variant="contained"

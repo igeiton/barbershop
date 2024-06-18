@@ -8,7 +8,7 @@ const userReducer = createSlice({
         phone: '',
         selectedMonth: new Date().getMonth() + 1,
         selectedYear: new Date().getFullYear(),
-        isOwner: true,
+        isOwner: false,
         service: 1,
         isBooked: {
             // заменить на Context

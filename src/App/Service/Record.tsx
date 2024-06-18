@@ -1,93 +1,88 @@
 import { Alert, Divider, Paper, Snackbar } from '@mui/material';
-import axios from 'axios';
 import { useState } from 'react';
 import {
     useCreateDayMutation,
     useCreateRecordMutation,
 } from '../../Store/API/daysApi';
+import { getDay } from '../../Store/API/getDay';
 import { useAppDispatch, useAppSelector } from '../../Store/store';
-import Loading from './UI/Loading';
 import { setBooked } from '../../Store/userReducer';
+import { filtering } from './Actions/FilterRecords';
+import { IDay, IRecord } from './Day';
+import { checkFill } from './Owner/Options/CheckFill';
+import Loading from '../UI/Loading';
+import Snack from '../UI/Snack';
 
 export default function Record({ time, day, service, update }: any) {
-    const { name, lastName, phone, isBooked } = useAppSelector(
-        (state) => state.user
-    );
-    const [isBooking, setBooking] = useState(false);
-    const [error, setError] = useState(false);
+    // hooks
+    const dispatch = useAppDispatch();
+
+    const { name, lastName, phone } = useAppSelector((state) => state.user);
+
+    const [isBooking, setBooking] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
 
     const [addRecord] = useCreateRecordMutation();
-
     const [newDay] = useCreateDayMutation();
 
+    // functions
     const book = async () => {
         setBooking(true);
 
-        const newRecord = {
-            id: new Date().getTime(),
-            recordStart: time,
-            recordEnd: time + service,
-            user: { name, lastName, phone: `+7${phone}` },
-        };
+        // records + new record
+        const newRecords: IRecord[] = [
+            ...day.records,
+            {
+                id: new Date().getTime(),
+                recordStart: time,
+                recordEnd: time + service,
+                user: { name, lastName, phone: `+7${phone}` },
+            },
+        ];
 
-        const updatedDay = {
+        // update day (sort + service)
+        const updatedDay: IDay = {
             ...day,
-            records: [...(day.records ? day?.records : []), newRecord].sort(
-                (a, b) => a.recordStart - b.recordStart
-            ),
+            records: newRecords.sort((a, b) => a.recordStart - b.recordStart),
+            service: checkFill(newRecords),
         };
 
-        const [data] = await axios
-            .get(
-                `https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/days?day=${day.day}`
-            )
-            .then((data) => {
-                return asd(data);
-            })
-            .catch(() => {
-                newDay(updatedDay);
-                return [{ records: [] }];
-            });
+        // get actually day
+        const actuallyDay: IDay = await getDay(day.day, () =>
+            newDay(updatedDay)
+        ).then(([data]) => data);
 
-        const filtered =
-            data.records.filter(
-                (record: any) => record.recordStart === newRecord.recordStart
-            ).length > 0;
-        // не закрывает задачу. Сранивает только начало записи.
-        // попробовать с помощью 'FilterRecords.ts' ???
-        if (filtered) {
+        // validation if record exists
+        if (!filtering(time, service, actuallyDay)) {
+            // record exists
             setBooking(false);
             setError(true);
+
             return;
+        } else {
+            // record not exists
+            addRecord({ body: updatedDay, dayID: day.id });
+            update(updatedDay);
+
+            dispatch(setBooked({ status: true, date: day.day }));
+            // выводить снэк "Забронировано на..."
         }
-
-        addRecord({ body: updatedDay, dayID: day.id });
-        update(updatedDay);
-
-        dispatch(setBooked({ status: true, date: day.day }));
-        // выводить снэк "Забронировано на..."
     };
-
-    const dispatch = useAppDispatch();
-
-    function asd(data: any) {
-        if (data?.data?.length === 0) {
-            throw new Error('error from asd');
-        }
-
-        return data.data;
-    }
 
     return (
         <Paper elevation={6} className="record" key={time}>
             <div className="w-full flex flex-col gap-[10px]">
                 <div className="flex justify-between">
                     <span>Start on:</span>
+
                     <span className="underline">{time}:00</span>
                 </div>
+
                 <Divider />
+
                 <div className="flex justify-between">
                     <span>End on:</span>
+
                     <span className="underline">{time + service}:00</span>
                 </div>
             </div>
@@ -109,11 +104,12 @@ export default function Record({ time, day, service, update }: any) {
                 </button>
             )}
 
-            <Snackbar open={error} onClose={() => setError(false)}>
-                <Alert severity="error">
-                    Record already exists. Please, update page.
-                </Alert>
-            </Snackbar>
+            <Snack
+                message="Record already exists. Please, update page."
+                open={error}
+                severity="error"
+                onClose={() => setError(false)}
+            />
         </Paper>
     );
 }

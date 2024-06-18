@@ -1,50 +1,29 @@
-import { useEffect } from 'react';
-import { useCreateRecordMutation } from '../../Store/API/daysApi';
 import { useAppDispatch, useAppSelector } from '../../Store/store';
 import { setService } from '../../Store/userReducer';
 import { getImageUrl } from '../assets/getImageUrl';
 import { filtering } from './Actions/FilterRecords';
 import Record from './Record';
-import ServiceSelect from './UI/ServiceSelect';
+import ServiceSelect from '../UI/ServiceSelect';
 
 export default function Records({ day: day, update }: any) {
+    // hooks
+    const dispatch = useAppDispatch();
+
     const { service } = useAppSelector((state) => state.user);
+
     // const [service, setService] = useState(1);
+
+    // const
     const graphic = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17];
+
     const filteredGraphic = graphic.filter((time) =>
         filtering(time, service, day)
     );
 
-    const [updateRecord] = useCreateRecordMutation();
-
-    const updateServiceFill = (fill: string) => {
-        updateRecord({
-            body: {
-                ...day,
-                service: fill,
-            },
-            dayID: day.id,
-        });
-    };
-
-    const dispatch = useAppDispatch();
-
+    // functions
     const switchService = (service: number) => {
         dispatch(setService(service));
     };
-
-    useEffect(() => {
-        if (day.records.length === 0) {
-            console.log('empty');
-            updateServiceFill('empty');
-        } else if (filteredGraphic.length === 0) {
-            console.log('fullfilled');
-            updateServiceFill('fullfilled');
-        } else {
-            console.log('halffilled');
-            updateServiceFill('halffilled');
-        }
-    }, []);
 
     return (
         <>
@@ -75,6 +54,7 @@ export default function Records({ day: day, update }: any) {
                             day={day}
                             service={service}
                             update={update}
+                            graphic={graphic}
                         />
                     ))
                 ) : (

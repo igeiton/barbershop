@@ -1,20 +1,30 @@
-export const styledDay = (day: any, isOwner: boolean) => {
-    const weekends =
-        new Date(day.day).getDay() === 0 || new Date(day.day).getDay() === 6;
+import { IDay } from '../../Service/Day';
 
+export interface IStyles {
+    [key: string]: string;
+}
+
+export const styledDayClient = (day: IDay): IStyles => {
     return {
         backgroundColor: gotBgColor(day),
         color: 'white',
-        cursor:
-            weekends || day.day === '' || (day.records.length === 0 && isOwner)
-                ? 'default'
-                : 'pointer',
+        cursor: isBookable(day) ? 'pointer' : 'default',
+        opacity: isBookable(day) ? '1' : '0.5',
         boxShadow: day.day === '' ? 'none' : '',
-        opacity: weekends ? 0.5 : 1,
     };
 };
 
-function gotBgColor(day: any) {
+export const styledDayOwner = (day: IDay): IStyles => {
+    return {
+        backgroundColor: gotBgColor(day),
+        color: 'white',
+        cursor: isFilled(day) ? 'pointer' : 'default',
+        opacity: isFilled(day) ? '1' : '0.5',
+        boxShadow: day.day === '' ? 'none' : '',
+    };
+};
+
+function gotBgColor(day: IDay): string {
     if (day.day === '') {
         return 'transparent';
     }
@@ -26,6 +36,28 @@ function gotBgColor(day: any) {
     } else {
         return '#1976d2';
     }
+}
 
-    return 'transparent';
+export function isBookable(day: IDay): boolean {
+    if (new Date(day.day).getDay() === 0 || new Date(day.day).getDay() === 6) {
+        return false;
+    }
+
+    if (day.day === '') {
+        return false;
+    }
+
+    if (day.service === 'fullfilled') {
+        return false;
+    }
+
+    return true;
+}
+
+export function isFilled(day: IDay): boolean {
+    if (day.service !== 'empty') {
+        return true;
+    }
+
+    return false;
 }

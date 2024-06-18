@@ -1,7 +1,10 @@
-export const validePhone = (currentPhone: any, targetValue: any) => {
+export const validePhone = (
+    currentPhone: string,
+    targetValue: string
+): string => {
     targetValue = targetValue.replace(/(\s)|(\+7)/g, '');
 
-    let splittedTargetValue: number[] = targetValue.split('');
+    let splittedTargetValue: string[] = targetValue.split('');
 
     if (targetValue.length > 10 || !!targetValue.match(/[^\d]/)) {
         splittedTargetValue = currentPhone.split('');

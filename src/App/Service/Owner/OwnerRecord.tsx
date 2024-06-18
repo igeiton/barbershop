@@ -1,14 +1,28 @@
 import { Divider, Paper } from '@mui/material';
 import { useState } from 'react';
 import Options from './Options/Options';
+import { IRecord } from '../Day';
 
-export default function OwnerRecord({ record, handleUpdateRecord }: any) {
-    const [newRecord, setNewRecord] = useState({
+interface IProps {
+    record: IRecord;
+    handleUpdateRecord: (newRecord: INewRecord) => void;
+}
+
+interface INewRecord {
+    id: number;
+    recordStart: number;
+    recordEnd: number;
+}
+
+export default function OwnerRecord({ record, handleUpdateRecord }: IProps) {
+    // hooks
+    const [newRecord, setNewRecord] = useState<INewRecord>({
         id: record.id,
         recordStart: record.recordStart,
         recordEnd: record.recordEnd,
     });
-    const [editMode, setEditMode] = useState(false);
+
+    const [editMode, setEditMode] = useState<boolean>(false);
 
     return (
         <Paper

@@ -1,4 +1,4 @@
-import { getImageUrl } from '../../assets/getImageUrl';
+import { getImageUrl } from '../assets/getImageUrl';
 
 export default function Loading() {
     return (
