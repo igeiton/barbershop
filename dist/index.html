@@ -16,16 +16,6 @@
         ></script>
 
         <script>
-            if ('serviceWorker' in navigator) {
-                window.addEventListener('load', () => {
-                    navigator.serviceWorker.register('/OneSignalSDKWorker.js', {
-                        scope: '/src/',
-                    });
-                });
-            }
-        </script>
-
-        <script>
             if (
                 'serviceWorker' in navigator &&
                 !navigator.serviceWorker.controller
