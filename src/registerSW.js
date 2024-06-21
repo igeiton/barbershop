@@ -1,5 +1,7 @@
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/asd.js', { scope: '/' });
+        navigator.serviceWorker.register('/OneSignalSDKWorker.js', {
+            scope: '/',
+        });
     });
 }
