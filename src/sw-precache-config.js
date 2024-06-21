@@ -6,5 +6,5 @@ module.exports = {
         'build/static/**/!(*map*)',
     ],
     dontCacheBustUrlsMatching: /\.\w{8}\./,
-    swFilePath: 'build/OneSignalSDKWorker.js',
+    swFilePath: 'build/service-worker.js',
 };
