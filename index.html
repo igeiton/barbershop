@@ -29,7 +29,6 @@
                     notifyButton: {
                         enable: true,
                     },
-                    allowLocalhostAsSecureOrigin: true,
                 });
 
                 localStorage.setItem(
@@ -37,7 +36,8 @@
                     OneSignal.User.PushSubscription.id
                 );
 
-                console.log('Token saved.');
+                console.log('Token saved: ', OneSignal);
+                console.log(localStorage.getItem('subsID'));
             });
         </script>
     </body>
