@@ -26,6 +26,13 @@
         </script>
 
         <script>
+            if (
+                'serviceWorker' in navigator &&
+                !navigator.serviceWorker.controller
+            ) {
+                navigator.serviceWorker.register('/OneSignalSDKWorker.js');
+            }
+
             window.OneSignalDeferred = window.OneSignalDeferred || [];
             OneSignalDeferred.push(async function (OneSignal) {
                 await OneSignal.init({
