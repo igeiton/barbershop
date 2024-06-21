@@ -19,20 +19,24 @@ export default function ServiceSelect({
         <div
             style={getBackground(bgImage)}
             className={`${
-                active ? 'w-[75%]' : 'w-[25%]'
-            } duration-300 ease-out`}
+                active ? 'w-[66%]' : 'w-[33%]'
+            } duration-500 ease-out`}
             onClick={onClick}
         >
             <Button
                 variant={active ? 'outlined' : 'contained'}
                 sx={{
-                    backdropFilter: 'blur(2.5px)',
+                    transition: 'all 0.5s ease',
+                    backdropFilter: 'blur(5px)',
                     color: 'white',
                     borderColor: 'white',
-                    ...(!active && { height: '100%', width: '100%' }),
+                    ...(active
+                        ? { width: '66%', height: '66%' }
+                        : { height: '100%', width: '100%' }),
                     '&:hover': {
                         borderColor: 'white',
                     },
+                    borderRadius: '10px',
                 }}
                 {...props}
             >
@@ -51,7 +55,7 @@ function getBackground(bgImage: string): IStyles {
         backgroundSize: 'cover',
         minHeight: '100px',
         display: 'flex',
-        borderRadius: '5px',
+        borderRadius: '10px',
         justifyContent: 'center',
         alignItems: 'center',
     };

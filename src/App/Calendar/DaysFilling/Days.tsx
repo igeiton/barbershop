@@ -1,23 +1,26 @@
-import { Divider } from '@mui/material';
+import { CircularProgress, Divider } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDeleteDaysMutation } from '../../../Store/API/daysApi';
 import { getDays } from '../../../Store/API/getDays';
 import { useAppSelector } from '../../../Store/store';
 import { IDay } from '../../Service/Day';
-import Loading from '../../UI/Loading';
 import { styledDayClient, styledDayOwner } from '../CalendarStyles/styledDay';
 import { dayOfWeek } from '../DatePicker/Actions/Dates';
 import { canBook } from './Actions/CanBook';
 import getDaysByDiff from './Actions/FillDays';
 
-export default function Days() {
+interface IProps {
+    days: IDay[];
+    setDays: (days: IDay[]) => void;
+}
+
+export default function Days({ days, setDays }: IProps) {
     // hooks
     const navigate = useNavigate();
 
     const [deleteDay] = useDeleteDaysMutation();
 
-    const [days, setDays] = useState<IDay[]>([]);
     const [isLoading, setLoading] = useState(true);
 
     const { selectedMonth, selectedYear, isOwner } = useAppSelector(
@@ -32,11 +35,16 @@ export default function Days() {
         if (canBook(day, isOwner)) navigate(`/${day.day}`);
     };
 
-    const clearing = async (): Promise<void> => {
-        for (let i = 0; i < days.length; i++) {
-            if (days[i].records.length === 0) {
-                deleteDay(days[i].id);
-                console.log('Deleted: ' + days[i].day);
+    const clearing = async (data: IDay[]): Promise<void> => {
+        const now = new Date().toLocaleDateString('LT');
+
+        for (let i = 0; i < data.length; i++) {
+            if (
+                data[i].records.length === 0 ||
+                new Date(data[i].day).getTime() < new Date(now).getTime()
+            ) {
+                deleteDay(data[i].id);
+                console.log('Deleted: ' + data[i].day);
             }
         }
     };
@@ -45,16 +53,31 @@ export default function Days() {
         getDays().then((data) => {
             setDays(data);
             setLoading(false);
-            clearing();
+            clearing(data);
         });
     }, []);
 
-    if (isLoading) return <Loading />;
+    if (isLoading)
+        return (
+            <div className="grow flex justify-center items-center">
+                <CircularProgress
+                    disableShrink
+                    sx={{
+                        color: 'grey',
+                    }}
+                />
+            </div>
+        );
 
     return (
-        <div className="days">
+        <div className="days animate-[fading_500ms_ease-out]">
             {dayOfWeek.map((day: string, index: number) => (
-                <div className="dayOfWeek" key={index}>
+                <div
+                    className={`dayOfWeek ${
+                        index > 4 ? 'opacity-50' : 'opacity-100'
+                    }`}
+                    key={index}
+                >
                     {day}
                 </div>
             ))}
@@ -70,10 +93,18 @@ export default function Days() {
 
             {filledDays.map((day: any, index: number) => (
                 <div
-                    onClick={() => toDay(day)}
+                    key={new Date(day.day).getTime() || index}
                     className="day"
-                    style={isOwner ? styledDayOwner(day) : styledDayClient(day)}
-                    key={index}
+                    style={{
+                        ...(isOwner
+                            ? styledDayOwner(day)
+                            : styledDayClient(day)),
+
+                        animation: `scaling ${
+                            Math.random() * 1000 + 100
+                        }ms ease-out`,
+                    }}
+                    onClick={() => toDay(day)}
                 >
                     {day.day.split('-')[2]}
                 </div>

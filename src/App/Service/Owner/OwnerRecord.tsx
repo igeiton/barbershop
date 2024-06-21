@@ -1,20 +1,27 @@
 import { Divider, Paper } from '@mui/material';
 import { useState } from 'react';
-import Options from './Options/Options';
 import { IRecord } from '../Day';
+import ChangeTime from './Options/ChangeTime';
+import Options from './Options/Options';
+import UserCard from './UI/UserCard';
 
 interface IProps {
     record: IRecord;
-    handleUpdateRecord: (newRecord: INewRecord) => void;
+    changeTime: (newRecord: INewRecord) => void;
+    deleteRecord: (id: number) => void;
 }
 
-interface INewRecord {
+export interface INewRecord {
     id: number;
     recordStart: number;
     recordEnd: number;
 }
 
-export default function OwnerRecord({ record, handleUpdateRecord }: IProps) {
+export default function OwnerRecord({
+    record,
+    changeTime,
+    deleteRecord,
+}: IProps) {
     // hooks
     const [newRecord, setNewRecord] = useState<INewRecord>({
         id: record.id,
@@ -27,80 +34,31 @@ export default function OwnerRecord({ record, handleUpdateRecord }: IProps) {
     return (
         <Paper
             elevation={6}
-            className="record flex-col"
-            key={record.recordStart}
+            className="record animate-[fading_1500ms_ease-out]"
+            key={record.id}
+            sx={PaperSX}
         >
             <div className="w-full flex flex-col gap-[10px]">
-                <div className="flex justify-between">
-                    <span>Start on:</span>
-                    <div className="flex items-center gap-1">
-                        {editMode && (
-                            <button
-                                onClick={() =>
-                                    setNewRecord({
-                                        ...newRecord,
-                                        recordStart: newRecord.recordStart - 1,
-                                    })
-                                }
-                            >
-                                -
-                            </button>
-                        )}
+                <UserCard record={record} />
 
-                        <span className="underline">
-                            {newRecord.recordStart}:00
-                        </span>
+                <div className="container">
+                    <ChangeTime
+                        title="Начало"
+                        editMode={editMode}
+                        newRecord={newRecord}
+                        setNewRecord={setNewRecord}
+                        rse="recordStart"
+                    />
 
-                        {editMode && (
-                            <button
-                                onClick={() =>
-                                    setNewRecord({
-                                        ...newRecord,
-                                        recordStart: newRecord.recordStart + 1,
-                                    })
-                                }
-                            >
-                                +
-                            </button>
-                        )}
-                    </div>
-                </div>
+                    <Divider sx={{ bgcolor: '#E3E3E3', opacity: 0.5 }} />
 
-                <Divider />
-
-                <div className="flex justify-between">
-                    <span>End on:</span>
-                    <div className="flex items-center gap-1">
-                        {editMode && (
-                            <button
-                                onClick={() =>
-                                    setNewRecord({
-                                        ...newRecord,
-                                        recordEnd: newRecord.recordEnd - 1,
-                                    })
-                                }
-                            >
-                                -
-                            </button>
-                        )}
-
-                        <span className="underline">
-                            {newRecord.recordEnd}:00
-                        </span>
-
-                        {editMode && (
-                            <button
-                                onClick={() =>
-                                    setNewRecord({
-                                        ...newRecord,
-                                        recordEnd: newRecord.recordEnd + 1,
-                                    })
-                                }
-                            >
-                                +
-                            </button>
-                        )}
-                    </div>
+                    <ChangeTime
+                        title="Конец"
+                        editMode={editMode}
+                        newRecord={newRecord}
+                        setNewRecord={setNewRecord}
+                        rse="recordEnd"
+                    />
                 </div>
             </div>
 
@@ -109,7 +67,7 @@ export default function OwnerRecord({ record, handleUpdateRecord }: IProps) {
                 setEditMode={setEditMode}
                 save={() => {
                     setEditMode(false);
-                    handleUpdateRecord(newRecord);
+                    changeTime(newRecord);
                 }}
                 cancel={() =>
                     setNewRecord({
@@ -118,7 +76,16 @@ export default function OwnerRecord({ record, handleUpdateRecord }: IProps) {
                         recordEnd: record.recordEnd,
                     })
                 }
+                remove={() => {
+                    deleteRecord(record.id);
+                }}
             />
         </Paper>
     );
 }
+
+const PaperSX = {
+    bgcolor: 'transparent',
+    borderRadius: '10px',
+    color: 'white',
+};

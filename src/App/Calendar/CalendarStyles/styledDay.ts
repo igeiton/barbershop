@@ -10,7 +10,7 @@ export const styledDayClient = (day: IDay): IStyles => {
         color: 'white',
         cursor: isBookable(day) ? 'pointer' : 'default',
         opacity: isBookable(day) ? '1' : '0.5',
-        boxShadow: day.day === '' ? 'none' : '',
+        boxShadow: gotBoxShadow(day),
     };
 };
 
@@ -20,7 +20,7 @@ export const styledDayOwner = (day: IDay): IStyles => {
         color: 'white',
         cursor: isFilled(day) ? 'pointer' : 'default',
         opacity: isFilled(day) ? '1' : '0.5',
-        boxShadow: day.day === '' ? 'none' : '',
+        boxShadow: gotBoxShadow(day),
     };
 };
 
@@ -38,7 +38,25 @@ function gotBgColor(day: IDay): string {
     }
 }
 
+function gotBoxShadow(day: IDay): string {
+    const today = new Date().toLocaleDateString('LT');
+
+    if (today === day.day) {
+        return '0 0 5px 2px #ffffff';
+    } else if (day.day === '') {
+        return 'none';
+    } else {
+        return '';
+    }
+}
+
 export function isBookable(day: IDay): boolean {
+    const today = new Date().toLocaleDateString('LT');
+
+    if (new Date(today).getTime() > new Date(day.day).getTime()) {
+        return false;
+    }
+
     if (new Date(day.day).getDay() === 0 || new Date(day.day).getDay() === 6) {
         return false;
     }

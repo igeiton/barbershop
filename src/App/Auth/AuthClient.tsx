@@ -9,6 +9,7 @@ import Input from './UI/Input';
 import Snack from '../UI/Snack';
 
 export interface IUserAuth {
+    subID: string;
     name: string;
     lastName: string;
     phone: string;
@@ -16,19 +17,21 @@ export interface IUserAuth {
 
 export default function AuthClient() {
     // hooks
-
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
 
     const { isAuth } = useAppSelector((state) => state.auth);
 
     const [user, setUser] = useState<IUserAuth>({
+        subID: '',
         name: '',
         lastName: '',
         phone: ' ',
     });
+
     const [isValidFields, setValidFields] = useState(true);
 
+    // functions
     const handleClick = (): void => {
         if (
             user.name === '' ||
@@ -52,44 +55,46 @@ export default function AuthClient() {
     });
 
     return (
-        <div className="form">
-            <Input
-                name="name"
-                value={user.name}
-                onChange={(e: any) =>
-                    setUser({ ...user, name: e.target.value })
-                }
-            />
+        <div className="m-[auto_15px]">
+            <div className="form">
+                <Input
+                    name="name"
+                    value={user.name}
+                    onChange={(e: any) =>
+                        setUser({ ...user, name: e.target.value })
+                    }
+                />
 
-            <Input
-                name="lastname"
-                value={user.lastName}
-                onChange={(e: any) =>
-                    setUser({ ...user, lastName: e.target.value })
-                }
-            />
+                <Input
+                    name="lastname"
+                    value={user.lastName}
+                    onChange={(e: any) =>
+                        setUser({ ...user, lastName: e.target.value })
+                    }
+                />
 
-            <Input
-                type="tel"
-                name="phoneNumber"
-                value={user.phone}
-                onChange={(e: any) =>
-                    setUser({
-                        ...user,
-                        phone: validePhone(user.phone, e.target.value),
-                    })
-                }
-                InputProps={{ startAdornment: '+7' }}
-            />
+                <Input
+                    type="tel"
+                    name="phoneNumber"
+                    value={user.phone}
+                    onChange={(e: any) =>
+                        setUser({
+                            ...user,
+                            phone: validePhone(user.phone, e.target.value),
+                        })
+                    }
+                    InputProps={{ startAdornment: '+7' }}
+                />
 
-            <Snack
-                message={'Заполните все поля'}
-                open={!isValidFields}
-                severity="error"
-                onClose={() => setValidFields(true)}
-            />
+                <Snack
+                    message={'Заполните все поля'}
+                    open={!isValidFields}
+                    severity="error"
+                    onClose={() => setValidFields(true)}
+                />
 
-            <Button onClick={handleClick}>Войти</Button>
+                <Button onClick={handleClick}>Войти</Button>
+            </div>
         </div>
     );
 }

@@ -1,15 +1,91 @@
-import { Alert, Button, Snackbar } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Button, CircularProgress } from '@mui/material';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getDay } from '../../Store/API/getDay';
-import Records from './Records';
-import './ServiceStyles/Day.css';
-import Loading from '../UI/Loading';
-import { useAppDispatch, useAppSelector } from '../../Store/store';
-import { setBooked } from '../../Store/userReducer';
-import OwnerRecords from './Owner/OwnerRecords';
+import { useAppSelector } from '../../Store/store';
 import { IUserAuth } from '../Auth/AuthClient';
+import Snack from '../UI/Snack';
 import { validateUrl } from './Actions/ValidateUrl';
+import Records from './Client/Records';
+import OwnerRecords from './Owner/OwnerRecords';
+
+import '../../Styles/keyframes.css';
+import './ServiceStyles/Day.css';
+
+export default function Day() {
+    // hooks
+    const navigate = useNavigate();
+
+    const { isOwner } = useAppSelector((state) => state.user);
+
+    const [isBooked, setBook] = useState<IIsBooked>({
+        isBooked: false,
+        date: '',
+    });
+
+    const [patternDay, setPatternDay] = useState<IDay>();
+
+    // const
+    const path: string = useLocation().pathname.replace('/', '');
+
+    // validation
+    if (!validateUrl(path)) {
+        return <div className="w-full self-center text-center">Error</div>;
+    }
+
+    // set day
+    useEffect(() => {
+        getDay(path).then(([data]) => {
+            setPatternDay(data);
+        });
+    }, []);
+
+    return (
+        <DayContext.Provider value={{ isBooked, setBook, setPatternDay }}>
+            <Button
+                variant="contained"
+                onClick={() => navigate('/')}
+                sx={{
+                    alignSelf: 'start',
+                    animation: 'scaling 0.5s',
+                    margin: '15px',
+                }}
+            >
+                {'❮'} Назад
+            </Button>
+
+            <div className="flex flex-col w-full max-w-[100vw] p-[15px] gap-5 grow">
+                {!patternDay ? (
+                    // <Loading />
+                    <div className="grow flex justify-center items-center">
+                        <CircularProgress
+                            disableShrink
+                            sx={{
+                                color: 'grey',
+                            }}
+                        />
+                    </div>
+                ) : isOwner ? (
+                    <OwnerRecords day={patternDay} />
+                ) : (
+                    <Records day={patternDay} update={setPatternDay} />
+                )}
+
+                <Snack
+                    message={isBooked.date}
+                    open={isBooked.isBooked}
+                    severity="success"
+                    onClose={() =>
+                        setBook({
+                            isBooked: false,
+                            date: '',
+                        })
+                    }
+                />
+            </div>
+        </DayContext.Provider>
+    );
+}
 
 export interface IDay {
     id: number;
@@ -25,63 +101,26 @@ export interface IRecord {
     user: IUserAuth;
 }
 
-export default function Day() {
-    // hooks
-    const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-
-    const { isOwner } = useAppSelector((state) => state.user);
-
-    const [patternDay, setPatternDay] = useState<IDay>();
-
-    // const
-    const path: string = useLocation().pathname.replace('/', '');
-
-    // validation
-    if (!validateUrl(path)) {
-        return <div className="w-full self-center text-center">Error</div>;
-    }
-
-    // ======================
-    const changeToCONTEXT = (status: boolean) => {
-        dispatch(setBooked({ status, date: '' }));
-    };
-    // ======================
-
-    // set day
-    useEffect(() => {
-        getDay(path).then(([data]) => {
-            setPatternDay(data);
-        });
-    }, []);
-
-    return (
-        <div className="flex flex-col w-full max-w-[100vw] p-[15px] gap-5">
-            <Button
-                variant="contained"
-                className="self-start"
-                onClick={() => navigate('/')}
-            >
-                {'<< Go Back'}
-            </Button>
-
-            {!patternDay ? (
-                <Loading />
-            ) : isOwner ? (
-                <OwnerRecords day={patternDay} />
-            ) : (
-                <Records day={patternDay} update={setPatternDay} />
-            )}
-
-            {/* <Snackbar
-                open={isBooked.status}
-                onClose={() => {
-                    console.log('close scnack');
-                    changeToCONTEXT(false);
-                }}
-            >
-                <Alert severity="success">'lalalallalalalala'</Alert>
-            </Snackbar> */}
-        </div>
-    );
+export interface IDayContext {
+    isBooked: IIsBooked;
+    setBook: ({ isBooked, date }: IIsBooked) => void;
+    setPatternDay: (day: IDay) => void;
 }
+
+interface IIsBooked {
+    isBooked: boolean;
+    date: string;
+}
+
+const DayContext = createContext<IDayContext>({
+    isBooked: {
+        isBooked: false,
+        date: '',
+    },
+    setBook: () => {},
+    setPatternDay: () => {},
+});
+
+export const useDay = () => {
+    return useContext(DayContext);
+};

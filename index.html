@@ -8,5 +8,33 @@
     <body>
         <div id="root"></div>
         <script type="module" src="/src/Routes/main.tsx"></script>
+
+        <script
+            src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+            defer
+        ></script>
+
+        <script>
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function (OneSignal) {
+                await OneSignal.init({
+                    appId: '7ec78ef9-197a-47a6-b77c-fa6d02907eba',
+                    notifyButton: {
+                        enable: true,
+                    },
+                    serviceWorkerParam: { scope: '/src/' },
+                    serviceWorkerPath: 'src/OneSignalSDKWorker.js',
+                    notifyButton: {
+                        enable: true,
+                    },
+                    allowLocalhostAsSecureOrigin: true,
+                });
+
+                localStorage.setItem(
+                    'subsID',
+                    OneSignal.User.PushSubscription.id
+                );
+            });
+        </script>
     </body>
 </html>

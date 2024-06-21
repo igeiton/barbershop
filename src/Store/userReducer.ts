@@ -1,5 +1,15 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+export interface IUser {
+    name: string;
+    lastName: string;
+    phone: string;
+    selectedMonth: number;
+    selectedYear: number;
+    isOwner: boolean;
+    service: number;
+}
+
 const userReducer = createSlice({
     name: 'user',
     initialState: {
@@ -10,12 +20,7 @@ const userReducer = createSlice({
         selectedYear: new Date().getFullYear(),
         isOwner: false,
         service: 1,
-        isBooked: {
-            // заменить на Context
-            status: false,
-            date: '',
-        },
-    },
+    } as IUser,
     reducers: {
         setCurrentUser(state, action) {
             state.name = action.payload.name;
@@ -33,14 +38,10 @@ const userReducer = createSlice({
         setService(state, action) {
             state.service = action.payload;
         },
-
-        setBooked(state, action) {
-            state.isBooked = action.payload;
-        },
     },
 });
 
-export const { setCurrentUser, setMonth, setYear, setService, setBooked } =
+export const { setCurrentUser, setMonth, setYear, setService } =
     userReducer.actions;
 
 export default userReducer.reducer;

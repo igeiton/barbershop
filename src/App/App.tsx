@@ -4,7 +4,7 @@ import Calendar from './Calendar/Calendar';
 
 function App() {
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col grow">
             <Calendar />
         </div>
     );
