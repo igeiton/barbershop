@@ -18,7 +18,7 @@
             if ('serviceWorker' in navigator) {
                 window.addEventListener('load', () => {
                     navigator.serviceWorker.register('/OneSignalSDKWorker.js', {
-                        scope: '/',
+                        scope: '/src/',
                     });
                 });
             }
@@ -36,8 +36,8 @@
                     },
                     // serviceWorkerParam: { scope: '/src/' },
                     // serviceWorkerPath: 'src/OneSignalSDKWorker.js',
-                    serviceWorkerParam: { scope: '/' },
-                    serviceWorkerPath: 'OneSignalSDKWorker.js',
+                    serviceWorkerParam: { scope: '/src/' },
+                    serviceWorkerPath: 'src/OneSignalSDKWorker.js',
                     // notifyButton: {
                     //     enable: true,
                     // },
