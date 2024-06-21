@@ -1,4 +1,3 @@
-import { CircularProgress } from '@mui/material';
 import { getImageUrl } from '../assets/getImageUrl';
 
 export default function Loading() {
