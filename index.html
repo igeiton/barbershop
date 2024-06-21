@@ -15,6 +15,16 @@
         ></script>
 
         <script>
+            if ('serviceWorker' in navigator) {
+                window.addEventListener('load', () => {
+                    navigator.serviceWorker.register('/OneSignalSDKWorker.js', {
+                        scope: '/src/',
+                    });
+                });
+            }
+        </script>
+
+        <script>
             window.OneSignalDeferred = window.OneSignalDeferred || [];
             OneSignalDeferred.push(async function (OneSignal) {
                 await OneSignal.init({
