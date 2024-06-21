@@ -8,7 +8,7 @@ export default defineConfig({
     plugins: [
         react(),
         VitePWA({
-            injectRegister: 'inline',
+            injectRegister: 'script-defer',
         }),
     ],
 });
