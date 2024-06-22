@@ -22,8 +22,27 @@ function App() {
 
 export default App;
 
+function requestPermission() {
+    return new Promise(function (resolve, reject) {
+        const permissionResult = Notification.requestPermission(function (
+            result
+        ) {
+            // Поддержка устаревшей версии с функцией обратного вызова.
+            resolve(result);
+        });
+
+        if (permissionResult) {
+            permissionResult.then(resolve, reject);
+        }
+    }).then(function (permissionResult) {
+        if (permissionResult !== 'granted') {
+            throw new Error('Permission not granted.');
+        }
+    });
+}
+
 async function initOneSignal(user: any) {
-    Notification.requestPermission();
+    requestPermission();
 
     await OneSignal.init({
         appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
