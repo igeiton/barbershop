@@ -6,6 +6,7 @@ import {
 import App from '../App/App';
 import Auth from '../App/Auth/Auth';
 import AuthClient from '../App/Auth/AuthClient';
+import AuthOwner from '../App/Auth/AuthOwner';
 import Day from '../App/Service/Day';
 
 export const router = createBrowserRouter(
@@ -15,5 +16,6 @@ export const router = createBrowserRouter(
             <Route path="/:day" element={<Day />} />,
         </Route>,
         <Route path="client_auth" element={<AuthClient />} />,
+        <Route path="owner_auth" element={<AuthOwner />} />,
     ])
 );

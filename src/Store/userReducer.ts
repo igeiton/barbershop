@@ -38,10 +38,14 @@ const userReducer = createSlice({
         setService(state, action) {
             state.service = action.payload;
         },
+
+        setOwner(state) {
+            state.isOwner = true;
+        },
     },
 });
 
-export const { setCurrentUser, setMonth, setYear, setService } =
+export const { setCurrentUser, setMonth, setYear, setService, setOwner } =
     userReducer.actions;
 
 export default userReducer.reducer;

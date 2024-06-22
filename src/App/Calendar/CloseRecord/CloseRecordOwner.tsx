@@ -13,6 +13,10 @@ export default function CloseRecordOwner({ days }: IProps) {
     // validation
     if (days.length === 0) return <CustomSkeleton />;
 
+    days = days.sort(
+        (a, b) => new Date(a.day).getTime() - new Date(b.day).getTime()
+    );
+
     // hour now
     const hourNow = Number(new Date().toLocaleTimeString().split(':')[0]);
 

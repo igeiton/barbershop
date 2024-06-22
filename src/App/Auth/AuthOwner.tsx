@@ -1,19 +1,21 @@
+import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../Store/authReducer';
 import { useAppDispatch, useAppSelector } from '../../Store/store';
-import { setCurrentUser } from '../../Store/userReducer';
-import CustomButton from '../UI/Button';
+import Button from '../UI/Button';
 import Snack from '../UI/Snack';
 import { validePhone } from './Actions/validePhone';
 import CustomLink from './UI/CustomLink';
 import Input from './UI/Input';
+import { setOwner } from '../../Store/userReducer';
 
-export interface IUserAuth {
-    subID: string;
+export interface IOwnerAuth {
+    id: string;
     name: string;
-    lastName: string;
     phone: string;
+    lastName: string;
+    password: string;
 }
 
 export default function AuthClient() {
@@ -23,27 +25,60 @@ export default function AuthClient() {
 
     const { isAuth } = useAppSelector((state) => state.auth);
 
-    const [user, setUser] = useState<IUserAuth>({
-        subID: '',
+    const [user, setUser] = useState<IOwnerAuth>({
+        id: '1',
         name: '',
-        lastName: '',
         phone: '',
+        lastName: '',
+        password: '',
     });
 
-    const [isValidFields, setValidFields] = useState(true);
+    const [isValidFields, setValidFields] = useState<{
+        mess: string;
+        isValid: boolean;
+    }>({
+        mess: '',
+        isValid: true,
+    });
 
     // functions
-    const handleClick = (): void => {
+    const handleClick = async (): Promise<void> => {
         if (
             user.name === '' ||
             user.lastName === '' ||
-            user.phone.replace(/\s/g, '').length < 10
+            user.phone.replace(/\s/g, '').length < 10 ||
+            user.password === ''
         ) {
-            setValidFields(false);
+            setValidFields({
+                mess: 'Заполните все поля.',
+                isValid: false,
+            });
             return;
         }
 
-        dispatch(setCurrentUser(user));
+        const owner = await axios
+            .get('https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/owners/1')
+            .then(({ data }) => data);
+
+        if (owner.password !== user.password) {
+            setValidFields({
+                mess: 'Неверные данные.',
+                isValid: false,
+            });
+            return;
+        }
+
+        await axios.put(
+            'https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/owners/1',
+            {
+                name: user.name,
+                lastName: user.lastName,
+                phone: user.phone,
+                subsID: localStorage.getItem('subsID'),
+            }
+        );
+
+        dispatch(setOwner());
         dispatch(login());
 
         navigate('/');
@@ -87,17 +122,25 @@ export default function AuthClient() {
                     InputProps={{ startAdornment: '+7' }}
                 />
 
-                <Snack
-                    message={'Заполните все поля'}
-                    open={!isValidFields}
-                    severity="error"
-                    onClose={() => setValidFields(true)}
+                <Input
+                    name="Пароль"
+                    value={user.password}
+                    onChange={(e: any) =>
+                        setUser({ ...user, password: e.target.value })
+                    }
                 />
 
-                <CustomButton onClick={handleClick}>Войти</CustomButton>
+                <Snack
+                    message={isValidFields.mess}
+                    open={!isValidFields.isValid}
+                    severity="error"
+                    onClose={() => setValidFields({ mess: '', isValid: true })}
+                />
 
-                <CustomLink onClick={() => navigate('/owner_auth')}>
-                    владелец
+                <Button onClick={handleClick}>Войти</Button>
+
+                <CustomLink onClick={() => navigate('/client_auth')}>
+                    пользователь
                 </CustomLink>
             </div>
         </div>
