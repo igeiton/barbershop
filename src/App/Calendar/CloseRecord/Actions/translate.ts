@@ -15,5 +15,5 @@ export const translate = (value: string): string => {
         Number(splittedCloseRecord[2]),
     ];
 
-    return `${day} ${months[month]}`;
+    return `${day} ${months[month - 1]}`;
 };

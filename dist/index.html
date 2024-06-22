@@ -4,7 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Barbershop</title>
-      <script type="module" crossorigin src="/assets/index-AMca1tqb.js"></script>
+      <script type="module" crossorigin src="/assets/index-CLJ0t0yE.js"></script>
       <link rel="stylesheet" crossorigin href="/assets/index-CkJUlw1M.css">
     </head>
     <body>
@@ -20,18 +20,9 @@
             OneSignalDeferred.push(async function (OneSignal) {
                 await OneSignal.init({
                     appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
-                    // safari_web_id:
-                    //     'web.onesignal.auto.4ed01e00-f557-41b7-a4bd-c51172d553fd',
                     notifyButton: {
                         enable: true,
                     },
-                    // serviceWorkerParam: { scope: '/src/' },
-                    // serviceWorkerPath: 'src/OneSignalSDKWorker.js',
-                    // serviceWorkerParam: { scope: '/' },
-                    // serviceWorkerPath: 'OneSignalSDKWorker.js',
-                    // notifyButton: {
-                    //     enable: true,
-                    // },
                 });
 
                 localStorage.setItem(
@@ -39,8 +30,7 @@
                     OneSignal.User.PushSubscription.id
                 );
 
-                console.log('Token saved: ', OneSignal.User);
-                console.log(localStorage.getItem('subsID'));
+                console.log('Token: ' + localStorage.getItem('subsID'));
             });
         </script>
     </body>
