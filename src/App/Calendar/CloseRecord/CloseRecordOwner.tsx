@@ -25,7 +25,7 @@ export default function CloseRecordOwner({ days }: IProps) {
         recordStart: 0,
         recordEnd: 0,
         user: {
-            subID: `${localStorage.getItem('subsID')}`,
+            subsID: `${localStorage.getItem('subsID')}`,
             name: '',
             lastName: '',
             phone: '',

@@ -38,7 +38,7 @@ export default function OwnerRecords({ day: day }: IProps) {
                     }:00`,
                 };
 
-                createNotif(record.user.subID, text, new Date());
+                createNotif(record.user.subsID, text, new Date());
             }
 
             return record;

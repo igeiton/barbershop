@@ -10,7 +10,7 @@ import CustomLink from './UI/CustomLink';
 import Input from './UI/Input';
 
 export interface IUserAuth {
-    subID: string;
+    subsID: string;
     name: string;
     lastName: string;
     phone: string;
@@ -24,7 +24,7 @@ export default function AuthClient() {
     const { isAuth } = useAppSelector((state) => state.auth);
 
     const [user, setUser] = useState<IUserAuth>({
-        subID: '',
+        subsID: '',
         name: '',
         lastName: '',
         phone: '',

@@ -16,7 +16,7 @@ export const addRecordToDay = (
             recordStart: time,
             recordEnd: time + service,
             user: {
-                subID: `${localStorage.getItem('subsID')}`,
+                subsID: `${localStorage.getItem('subsID')}`,
                 name: user.name,
                 lastName: user.lastName,
                 phone: `+7${user.phone}`,
