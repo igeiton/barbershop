@@ -8,10 +8,10 @@ import axios from 'axios';
 import { useAppSelector } from '../Store/store';
 
 function App() {
-    const { phone } = useAppSelector((state) => state.user);
+    const user = useAppSelector((state) => state.user);
 
     useEffect(() => {
-        initOneSignal(phone);
+        initOneSignal(user);
     }, []);
     return (
         <div className="flex flex-col grow">
@@ -22,7 +22,7 @@ function App() {
 
 export default App;
 
-async function initOneSignal(phone: string) {
+async function initOneSignal(user: any) {
     await OneSignal.init({
         appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
     })
@@ -33,7 +33,19 @@ async function initOneSignal(phone: string) {
 
     localStorage.setItem('subsID', `${OneSignal.User.PushSubscription.id}`);
 
-    updateDay(phone);
+    if (user.isOwner) {
+        await axios.put(
+            'https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/owners/1',
+            {
+                name: user.name,
+                lastName: user.lastName,
+                phone: user.phone,
+                subsID: localStorage.getItem('subsID'),
+            }
+        );
+    } else {
+        updateDay(user.phone);
+    }
 }
 
 async function updateDay(phone: string) {
