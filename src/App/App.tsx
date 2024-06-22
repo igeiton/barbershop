@@ -23,6 +23,8 @@ function App() {
 export default App;
 
 async function initOneSignal(user: any) {
+    Notification.requestPermission();
+
     await OneSignal.init({
         appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
     })
