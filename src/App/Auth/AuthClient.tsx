@@ -58,7 +58,7 @@ export default function AuthClient() {
         <div className="m-[auto_15px]">
             <div className="form">
                 <Input
-                    name="name"
+                    name="Имя"
                     value={user.name}
                     onChange={(e: any) =>
                         setUser({ ...user, name: e.target.value })
@@ -66,7 +66,7 @@ export default function AuthClient() {
                 />
 
                 <Input
-                    name="lastname"
+                    name="Фамилия"
                     value={user.lastName}
                     onChange={(e: any) =>
                         setUser({ ...user, lastName: e.target.value })
@@ -75,7 +75,7 @@ export default function AuthClient() {
 
                 <Input
                     type="tel"
-                    name="phoneNumber"
+                    name="Телефон (для связи)"
                     value={user.phone}
                     onChange={(e: any) =>
                         setUser({
