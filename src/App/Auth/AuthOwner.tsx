@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { login } from '../../Store/authReducer';
 import { useAppDispatch, useAppSelector } from '../../Store/store';
-import Button from '../UI/Button';
+import CustomButton from '../UI/Button';
 import Snack from '../UI/Snack';
 import { validePhone } from './Actions/validePhone';
 import CustomLink from './UI/CustomLink';
@@ -41,19 +41,19 @@ export default function AuthClient() {
         isValid: true,
     });
 
+    const [loading, setLoading] = useState<boolean>(false);
+
     // functions
     const handleClick = async (): Promise<void> => {
+        setLoading(true);
+
         if (
             user.name === '' ||
             user.lastName === '' ||
             user.phone.replace(/\s/g, '').length < 10 ||
             user.password === ''
         ) {
-            setValidFields({
-                mess: 'Заполните все поля.',
-                isValid: false,
-            });
-            return;
+            return handleLoading('Заполните все поля.');
         }
 
         const owner = await axios
@@ -61,11 +61,7 @@ export default function AuthClient() {
             .then(({ data }) => data);
 
         if (owner.password !== user.password) {
-            setValidFields({
-                mess: 'Неверные данные.',
-                isValid: false,
-            });
-            return;
+            return handleLoading('Неверные данные.');
         }
 
         await axios.put(
@@ -89,6 +85,16 @@ export default function AuthClient() {
             navigate('/');
         }
     });
+
+    const handleLoading = (mess: string) => {
+        setValidFields({
+            mess: mess,
+            isValid: false,
+        });
+
+        setLoading(false);
+        return;
+    };
 
     return (
         <div className="m-[auto_15px]">
@@ -137,7 +143,9 @@ export default function AuthClient() {
                     onClose={() => setValidFields({ mess: '', isValid: true })}
                 />
 
-                <Button onClick={handleClick}>Войти</Button>
+                <CustomButton loading={loading} onClick={handleClick}>
+                    Войти
+                </CustomButton>
 
                 <CustomLink onClick={() => navigate('/client_auth')}>
                     пользователь

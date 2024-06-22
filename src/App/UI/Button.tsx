@@ -1,14 +1,20 @@
-import { Button } from '@mui/material';
+import { Button } from '@mui/joy';
 
 interface IProps {
+    loading?: boolean;
     children: React.ReactNode;
     onClick: () => void;
 }
 
-export default function CustomButton({ children, onClick }: IProps) {
+export default function CustomButton({
+    loading = false,
+    children,
+    onClick,
+}: IProps) {
     return (
         <Button
-            variant="contained"
+            loading={loading}
+            variant="solid"
             sx={{ padding: '10px 20px' }}
             onClick={onClick}
         >

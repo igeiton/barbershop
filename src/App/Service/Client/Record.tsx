@@ -1,4 +1,5 @@
-import { CircularProgress, Divider, Paper } from '@mui/material';
+import { Button } from '@mui/joy';
+import { Divider, Paper } from '@mui/material';
 import { useState } from 'react';
 import { createNotif } from '../../../Store/API/createNotif';
 import {
@@ -27,7 +28,7 @@ export default function Record({ time, day, service }: IProps) {
     const user = useAppSelector((state) => state.user);
 
     const [isBooking, setBooking] = useState<boolean>(false);
-    const [error, setError] = useState<boolean>(false);
+    const [isError, setError] = useState<boolean>(false);
 
     const [addRecord] = useCreateRecordMutation();
     const [newDay] = useCreateDayMutation();
@@ -106,32 +107,39 @@ export default function Record({ time, day, service }: IProps) {
                     </div>
                 </div>
 
-                {!isBooking ? (
-                    <button
-                        onClick={booking}
-                        className={
-                            'bookButton' + (error ? 'error opacity-15' : '')
-                        }
-                    >
-                        Забронировать
-                    </button>
-                ) : (
-                    <button className="bookButton">
-                        <CircularProgress
-                            disableShrink
-                            sx={{ color: 'white' }}
-                        />
-                    </button>
-                )}
+                <Button
+                    loading={isBooking}
+                    disabled={isError || isBooking}
+                    onClick={booking}
+                    sx={isError ? ButtonSX('#d32f2f') : ButtonSX('white')}
+                >
+                    {isError ? 'Занято' : 'Забронировать'}
+                </Button>
 
                 <Snack
-                    message="Record already exists. Please, update page."
-                    open={error}
+                    message="Уже занято. Пожалуйста, обновите страницу."
+                    open={isError}
                     severity="error"
-                    onClose={() => setError(false)}
+                    onClose={() => {}}
                 />
             </Paper>
+
             <Divider sx={{ bgcolor: 'grey' }} />
         </>
     );
 }
+
+const ButtonSX = (color: string) => {
+    return {
+        transition: 'all 0.15s ease',
+        bgcolor: color,
+        color: 'black',
+        width: '100%',
+        '&:hover': { bgcolor: color, opacity: 0.75 },
+        borderRadius: '10px',
+        '&.Mui-disabled': {
+            bgcolor: color,
+            opacity: 0.5,
+        },
+    };
+};
