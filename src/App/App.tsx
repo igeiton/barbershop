@@ -24,7 +24,7 @@ export default App;
 
 async function initOneSignal(user: any) {
     await OneSignal.init({
-        appId: '7ec78ef9-197a-47a6-b77c-fa6d02907eba',
+        appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
     })
         .then(() => {
             OneSignal.Slidedown.promptPush();
