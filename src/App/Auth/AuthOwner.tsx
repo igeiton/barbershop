@@ -8,7 +8,7 @@ import Snack from '../UI/Snack';
 import { validePhone } from './Actions/validePhone';
 import CustomLink from './UI/CustomLink';
 import Input from './UI/Input';
-import { setOwner } from '../../Store/userReducer';
+import { setCurrentUser, setOwner } from '../../Store/userReducer';
 
 export interface IOwnerAuth {
     id: string;
@@ -74,6 +74,7 @@ export default function AuthClient() {
             }
         );
 
+        dispatch(setCurrentUser(user));
         dispatch(setOwner());
         dispatch(login());
 

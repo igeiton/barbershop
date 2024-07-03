@@ -22,30 +22,9 @@ function App() {
 
 export default App;
 
-function requestPermission() {
-    return new Promise(function (resolve, reject) {
-        const permissionResult = Notification.requestPermission(function (
-            result
-        ) {
-            // Поддержка устаревшей версии с функцией обратного вызова.
-            resolve(result);
-        });
-
-        if (permissionResult) {
-            permissionResult.then(resolve, reject);
-        }
-    }).then(function (permissionResult) {
-        if (permissionResult !== 'granted') {
-            throw new Error('Permission not granted.');
-        }
-    });
-}
-
 async function initOneSignal(user: any) {
-    requestPermission();
-
     await OneSignal.init({
-        appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
+        appId: '7ec78ef9-197a-47a6-b77c-fa6d02907eba',
     })
         .then(() => {
             OneSignal.Slidedown.promptPush();
@@ -81,7 +60,7 @@ async function updateDay(phone: string) {
                     localStorage.getItem('subsID') &&
                 data[i].records[j].user.phone === `+7${phone}`
             ) {
-                console.log(true);
+                console.log('Token changed');
                 data[i].records[j].user.subsID = localStorage.getItem('subsID');
 
                 await axios.put(
@@ -91,5 +70,4 @@ async function updateDay(phone: string) {
             }
         }
     }
-    console.log(data);
 }
