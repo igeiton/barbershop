@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import Calendar from './Calendar/Calendar';
 
-import OneSignal from 'react-onesignal';
 import axios from 'axios';
 import { useAppSelector } from '../Store/store';
 
@@ -17,10 +16,6 @@ function App() {
     return (
         <div className="flex flex-col grow">
             <Calendar />
-
-            <button onClick={() => OneSignal.Slidedown.promptPush()}>
-                SHOW PROPMT
-            </button>
         </div>
     );
 }
