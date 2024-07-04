@@ -14,23 +14,21 @@
             defer
         ></script>
 
-        <!-- <script>
+        <script>
             window.OneSignalDeferred = window.OneSignalDeferred || [];
             OneSignalDeferred.push(async function (OneSignal) {
                 await OneSignal.init({
                     appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
-                    notifyButton: {
-                        enable: true,
-                    },
+                    // notifyButton: {
+                    //     enable: true,
+                    // },
                 });
 
                 localStorage.setItem(
                     'subsID',
                     OneSignal.User.PushSubscription.id
                 );
-
-                console.log('Token: ' + localStorage.getItem('subsID'));
             });
-        </script> -->
+        </script>
     </body>
 </html>

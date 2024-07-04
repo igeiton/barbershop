@@ -11,42 +11,21 @@ function App() {
     const user = useAppSelector((state) => state.user);
 
     useEffect(() => {
-        initOneSignal(user);
+        updateDay(user.phone);
     }, []);
+
     return (
         <div className="flex flex-col grow">
             <Calendar />
+
+            <button onClick={() => OneSignal.Slidedown.promptPush()}>
+                SHOW PROPMT
+            </button>
         </div>
     );
 }
 
 export default App;
-
-async function initOneSignal(user: any) {
-    await OneSignal.init({
-        appId: '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132',
-    })
-        .then(() => {
-            OneSignal.Slidedown.promptPush();
-        })
-        .catch((err) => console.log(err));
-
-    localStorage.setItem('subsID', `${OneSignal.User.PushSubscription.id}`);
-
-    if (user.isOwner) {
-        await axios.put(
-            'https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/owners/1',
-            {
-                name: user.name,
-                lastName: user.lastName,
-                phone: user.phone,
-                subsID: localStorage.getItem('subsID'),
-            }
-        );
-    } else {
-        updateDay(user.phone);
-    }
-}
 
 async function updateDay(phone: string) {
     const { data }: any = await axios
