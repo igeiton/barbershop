@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 export const createNotif = async (subsID: string, text: any, date: Date) => {
-    const tempAppID = '7ec78ef9-197a-47a6-b77c-fa6d02907eba';
-    const tempAPIKey = 'OWZmMDI3ODQtODIwYS00Nzc1LTg0NmQtMDgzN2JkNWViZjg3';
+    const tempAppID = '8fc8a9b2-0afd-47c6-9799-9cf88b9bc132';
+    const tempAPIKey = 'ZTU2MzY3MDQtYjFkYy00NGYzLTk3ZmQtMTM2OTk5MmVjNDY3';
 
     const headers = {
         headers: {
