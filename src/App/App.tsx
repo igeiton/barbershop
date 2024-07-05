@@ -5,12 +5,13 @@ import Calendar from './Calendar/Calendar';
 
 import axios from 'axios';
 import { useAppSelector } from '../Store/store';
+import OneSignal from 'react-onesignal';
 
 function App() {
     const user = useAppSelector((state) => state.user);
 
     useEffect(() => {
-        updateDay(user.phone);
+        initOneSignal(user);
     }, []);
 
     return (
@@ -22,6 +23,32 @@ function App() {
 
 export default App;
 
+async function initOneSignal(user: any) {
+    await OneSignal.init({
+        appId: '7ec78ef9-197a-47a6-b77c-fa6d02907eba',
+    })
+        .then(() => {
+            OneSignal.Slidedown.promptPush();
+        })
+        .catch((err) => console.log(err));
+
+    localStorage.setItem('subsID', `${OneSignal.User.PushSubscription.id}`);
+
+    if (user.isOwner) {
+        await axios.put(
+            'https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/owners/1',
+            {
+                name: user.name,
+                lastName: user.lastName,
+                phone: user.phone,
+                subsID: localStorage.getItem('subsID'),
+            }
+        );
+    } else {
+        updateDay(user.phone);
+    }
+}
+
 async function updateDay(phone: string) {
     const { data }: any = await axios
         .get('https://666943c52e964a6dfed45ef0.mockapi.io/api/v1/days')
@@ -32,7 +59,8 @@ async function updateDay(phone: string) {
             if (
                 data[i].records[j].user.subsID !==
                     localStorage.getItem('subsID') &&
-                data[i].records[j].user.phone === `+7${phone}`
+                data[i].records[j].user.phone === `+7${phone}` &&
+                localStorage.getItem('subsID') !== null
             ) {
                 console.log('Token changed');
                 data[i].records[j].user.subsID = localStorage.getItem('subsID');
